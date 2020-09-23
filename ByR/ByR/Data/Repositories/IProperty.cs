@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace ByR.Data.Repositories
 {
     public interface IProperty : IGeneric<Property>
-    {
+    {        
     }
 }

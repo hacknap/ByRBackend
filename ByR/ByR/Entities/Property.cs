@@ -42,6 +42,7 @@ namespace ByR.Entities
         [Display(Name = "Descripcion de la propiedad")]
         [Required(ErrorMessage = "Debe ingresar {0}")]
         [StringLength(400, ErrorMessage = "El campo no puede tener mas de {1} caracteres")]
+        [DataType(DataType.MultilineText)]
         public string Description  { get; set; }
 
         [Display(Name = "Latitud")]

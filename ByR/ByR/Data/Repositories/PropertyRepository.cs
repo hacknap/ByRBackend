@@ -13,5 +13,6 @@ namespace ByR.Data.Repositories
         {
             this.context = context;
         }
+       
     }
 }
