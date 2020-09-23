@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ByR.Data.Repositories;
 using ByR.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,10 @@ namespace ByR
            (Configuration.GetConnectionString(DbConfig)));
 
             services.AddControllers();
+
+            //Data base repositories
+            services.AddScoped<IProperty, PropertyRepository>();
+            services.AddScoped<IUser, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
