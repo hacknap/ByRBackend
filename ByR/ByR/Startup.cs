@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ByR.Data.Repositories;
-using ByR.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ByR.Controllers;
+using ByR.Helpers;
+using ByR.Entities;
+using ByR.Data.Repositories;
 
 namespace ByR
 {
@@ -21,19 +23,35 @@ namespace ByR
         {
             Configuration = configuration;
         }
-
+        public IConfiguration Configuration { get; }
         public string DbConfig = "SqlDB";
 
-        public IConfiguration Configuration { get; }
+      
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                options.JsonSerializerOptions.DictionaryKeyPolicy = null;
+            });
 
-           services.AddDbContext<DataContext>(options => options.UseSqlServer
-           (Configuration.GetConnectionString(DbConfig)));
 
-            services.AddControllers();
+            services.AddScoped<UsersController>();
+
+            services.AddCors(options => {
+                options.AddPolicy("AllowAll", p =>
+                {
+                    p.AllowAnyOrigin().
+                    AllowAnyHeader().
+                    AllowAnyMethod();
+                });
+            });
+            services.AddDbContext<DataContext>(options => options.UseSqlServer
+            (Configuration.GetConnectionString(DbConfig)));
+
 
             //Data base repositories
             services.AddScoped<IProperty, PropertyRepository>();
@@ -43,22 +61,29 @@ namespace ByR
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("AllowAll");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            if (env.IsProduction())
+            {
+                DbConfig = "SqlDBRemoto";
 
+            }
             app.UseRouting();
 
+            app.UseMiddleware<JwtMiddleware>();
+
             app.UseAuthorization();
-
-            app.UseCors();
-
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            
         }
     }
 }

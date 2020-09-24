@@ -55,5 +55,8 @@ namespace ByR.Entities
         public TypeProperty TypeProperty { get; set; }
         public Category Category { get; set; }
 
+        public User User { get; set; }
+
+
     }
 }

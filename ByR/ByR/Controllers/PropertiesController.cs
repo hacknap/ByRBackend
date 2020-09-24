@@ -41,37 +41,37 @@ namespace ByR.Controllers
             return @property;
         }
 
-        // PUT: api/Properties/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProperty(string id, Property @property)
-        {
-            if (id != @property.Id)
+            // PUT: api/Properties/5
+            // To protect from overposting attacks, enable the specific properties you want to bind to, for
+            // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+            [HttpPut("{id}")]
+            public async Task<IActionResult> PutProperty(string id, Property @property)
             {
-                return BadRequest();
-            }
-
-            _context.Entry(@property).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PropertyExists(id))
+                if (id != @property.Id)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return NoContent();
-        }
+                _context.Entry(@property).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PropertyExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return NoContent();
+            }
 
         // POST: api/Properties
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
