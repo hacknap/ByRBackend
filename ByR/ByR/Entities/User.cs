@@ -40,5 +40,13 @@ namespace ByR.Entities
         [Required(ErrorMessage = "Debe ingresar {0}")]
         [StringLength(20, ErrorMessage = "El campo no puede tener mas de {1} caracteres")]
         public string Ci { get; set; }
+
+        [Display(Name = "Clave")]
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [NotMapped]
+        public string Token { get; set; }
     }
 }

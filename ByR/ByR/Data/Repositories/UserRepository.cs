@@ -1,8 +1,6 @@
 ﻿using ByR.Entities;
-using System;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ByR.Data.Repositories
 {
@@ -13,5 +11,17 @@ namespace ByR.Data.Repositories
         {
             this.context = context;
         }
+
+        public User GerUserById(string id)
+        {
+            return context.User.FirstOrDefault(x => x.Id == id);
+        }
+
+        public User GetUserLogin(string nameUser, string password)
+        {
+            return context.User.FirstOrDefault(ele => ele.Name == nameUser && ele.Password == password);
+
+        }
+
     }
 }
