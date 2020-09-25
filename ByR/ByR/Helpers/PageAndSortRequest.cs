@@ -10,7 +10,7 @@ namespace ByR.Helpers
         public string Column { get; set; }
         public string Direction { get; set; }
         public int Page { get; set; }
-        public int SizePage { get; set; }
+        public int PageSize { get; set; }
         public string Filter { get; set; }
     }
 }
