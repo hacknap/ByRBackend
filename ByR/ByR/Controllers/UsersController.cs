@@ -59,6 +59,8 @@ namespace ByR.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+
+           
             if (ModelState.IsValid)
             {
                 user.IsDelete = false;
