@@ -10,6 +10,7 @@ namespace ByR.Entities
     [Table("Gallery")]
     public class Gallery
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public bool IsDelete { get; set; }
         public DateTime Register { get; set; }

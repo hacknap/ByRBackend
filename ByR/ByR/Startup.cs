@@ -38,6 +38,7 @@ namespace ByR
             //Data base repositories
             services.AddScoped<IProperty, PropertyRepository>();
             services.AddScoped<IUser, UserRepository>();
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

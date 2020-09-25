@@ -11,6 +11,7 @@ namespace ByR.Entities
     [Table("Role")]
     public class Role : IEntity
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public bool IsDelete { get; set; }
         public DateTime Register { get; set; }

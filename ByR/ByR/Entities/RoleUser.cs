@@ -10,6 +10,7 @@ namespace ByR.Entities
     [Table("RoleUser")]
     public class RoleUser : IEntity
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public bool IsDelete { get; set; }
         public DateTime Register { get; set; }  
