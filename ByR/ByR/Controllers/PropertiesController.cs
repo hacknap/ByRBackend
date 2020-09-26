@@ -18,11 +18,13 @@ namespace ByR.Controllers
     {
         private readonly IProperty _properties;
         private readonly AppSettings _appSettings;
+        private readonly IUser _users;
 
-        public PropertiesController(IProperty property, IOptions<AppSettings> appSettings)
+        public PropertiesController(IProperty property, IOptions<AppSettings> appSettings, IUser user)
         {
             _properties = property;
             _appSettings = appSettings.Value;
+            _users = user;
         }
 
         [HttpGet]
@@ -38,6 +40,9 @@ namespace ByR.Controllers
             {
                 property.IsDelete = false;
                 property.Register = DateTime.UtcNow;
+                var user = await _users.FindByIdAsync(property.UserIdPro);
+                property.User = user;
+                
                 await _properties.CreateAsync(property);
             }
             else
