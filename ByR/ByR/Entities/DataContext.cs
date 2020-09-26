@@ -24,8 +24,12 @@ namespace ByR.Entities
         }
 
         public DbSet<User> User { get; set; }
-        public DbSet<Property> Property { get; set; }
-        
+        public DbSet<Property> Property { get; set; } 
+        public DbSet<Role> Role { get; set; }
+        public DbSet<RoleUser> RoleUser { get; set; }
+
+
+
 
     }
 }

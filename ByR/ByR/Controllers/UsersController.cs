@@ -51,6 +51,8 @@ namespace ByR.Controllers
             var user = _users.GetUserLogin(nameUser,password);
             var token = generateJwtToken(user);
             user.Token = token;
+            var roleDescription = _users.GetRoleUser(user.Id);
+            user.Role = roleDescription;
             return user;
         }
 
@@ -63,9 +65,15 @@ namespace ByR.Controllers
            
             if (ModelState.IsValid)
             {
+               
+                var rol = _users.GetRoleUserDescription(user.Role);
+                await _users.CreateAsync(user);
+                
+                _users.CreateRolUser( rol,user);
+
                 user.IsDelete = false;
                 user.Register = DateTime.Now;
-                await _users.CreateAsync(user);
+               
             }
             else {
                 return BadRequest();
@@ -93,7 +101,7 @@ namespace ByR.Controllers
         }
 
 
-
+        [Authorize]
         // DELETE: api/User/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUsuario(string id)

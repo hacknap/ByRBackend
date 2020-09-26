@@ -9,7 +9,12 @@ namespace ByR.Data.Repositories
 {
     public interface IUser : IGeneric<User>
     {
-       User GetUserLogin(string nameUser, string password);
+       User GetUserLogin(string email, string password);
        User GerUserById(string id);
+       string GetRoleUser(string id);
+
+       Role GetRoleUserDescription(string description);
+
+       public void CreateRolUser(Role rolId, User userId);
     }
 }
