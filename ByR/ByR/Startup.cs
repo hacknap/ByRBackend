@@ -56,6 +56,7 @@ namespace ByR
             //Data base repositories
             services.AddScoped<IProperty, PropertyRepository>();
             services.AddScoped<IUser, UserRepository>();
+
            
         }
 
