@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ByR.Entities;
+using ByR.Data.Repositories;
+using ByR.Helpers;
+using Microsoft.Extensions.Options;
 
 namespace ByR.Controllers
 {
@@ -13,111 +16,41 @@ namespace ByR.Controllers
     [ApiController]
     public class PropertiesController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IProperty _properties;
+        private readonly AppSettings _appSettings;
+        private readonly IUser _users;
 
-        public PropertiesController(DataContext context)
+        public PropertiesController(IProperty property, IOptions<AppSettings> appSettings, IUser user)
         {
-            _context = context;
+            _properties = property;
+            _appSettings = appSettings.Value;
+            _users = user;
         }
 
-        // GET: api/Properties
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Property>>> GetProperty()
+        public async Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id)
         {
-            return await _context.Property.ToListAsync();
+            return await _properties.GetProperties(param, id);
         }
 
-        // GET: api/Properties/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Property>> GetProperty(string id)
-        {
-            var @property = await _context.Property.FindAsync(id);
-
-            if (@property == null)
-            {
-                return NotFound();
-            }
-
-            return @property;
-        }
-
-            // PUT: api/Properties/5
-            // To protect from overposting attacks, enable the specific properties you want to bind to, for
-            // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-            [HttpPut("{id}")]
-            public async Task<IActionResult> PutProperty(string id, Property @property)
-            {
-                if (id != @property.Id)
-                {
-                    return BadRequest();
-                }
-
-                _context.Entry(@property).State = EntityState.Modified;
-
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PropertyExists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-
-                return NoContent();
-            }
-
-        // POST: api/Properties
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Property>> PostProperty(Property @property)
+        public async Task<ActionResult<Property>> PostProperty(Property property)
         {
-            _context.Property.Add(@property);
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
+                property.IsDelete = false;
+                property.Register = DateTime.UtcNow;
+                var user = await _users.FindByIdAsync(property.UserIdPro);
+                property.User = user;
+                
+                await _properties.CreateAsync(property);
             }
-            catch (DbUpdateException)
+            else
             {
-                if (PropertyExists(@property.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
-
-            return CreatedAtAction("GetProperty", new { id = @property.Id }, @property);
+            return property;
         }
 
-        // DELETE: api/Properties/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Property>> DeleteProperty(string id)
-        {
-            var @property = await _context.Property.FindAsync(id);
-            if (@property == null)
-            {
-                return NotFound();
-            }
-
-            _context.Property.Remove(@property);
-            await _context.SaveChangesAsync();
-
-            return @property;
-        }
-
-        private bool PropertyExists(string id)
-        {
-            return _context.Property.Any(e => e.Id == id);
-        }
     }
 }

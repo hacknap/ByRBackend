@@ -19,7 +19,7 @@ namespace ByR.Entities
         [Display(Name = "Precio de propiedad")]
         [Required(ErrorMessage = "Debe ingresar {0}")]
         [DisplayFormat(DataFormatString = "{0:#}")]
-        [Column(TypeName = "decimal(5,0)")]
+        [Column(TypeName = "decimal(16,6)")]
         [DataType(DataType.Currency)]
         public decimal Price { get; set; }
                     
@@ -52,6 +52,8 @@ namespace ByR.Entities
         [Display(Name = "Longitud")]
         public string Longitude { get; set; }
 
+        [NotMapped]
+        public string UserIdPro { get; set; }
         //Enums
         public TypeProperty TypeProperty { get; set; }
         public Category Category { get; set; }
