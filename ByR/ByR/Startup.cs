@@ -24,7 +24,7 @@ namespace ByR
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
-        public string DbConfig = "SqlDBFavio";
+        public string DbConfig = "DefaultConnection";
 
       
 
