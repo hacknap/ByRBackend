@@ -17,18 +17,14 @@ namespace ByR.Data.Repositories
         {
             this.context = context;
         }
-        public async Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id, User user)
+        public async Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id)
         {
             IEnumerable<Property> listProperty = null;
             
             
             listProperty = await context.Property.Where(p => p.User.Id == id || p.IsDelete.Equals(false) ).ToListAsync();
             
-            foreach (var item in listProperty)
-            {
-                item.User = user;
-                item.UserIdPro = id;
-            }
+           
             if (param.Direction.ToLower() == "asc")
                 listProperty = await context.Property.OrderBy(p => EF.Property<object>(p, param.Column)).ToListAsync();
             else if (param.Direction.ToLower() == "desc")
