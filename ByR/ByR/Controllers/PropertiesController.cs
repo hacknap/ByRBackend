@@ -30,8 +30,7 @@ namespace ByR.Controllers
         [HttpGet]
         public async Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id)
         {
-            var  user = await _users.FindByIdAsync(id);
-            return await _properties.GetProperties(param, id, user);
+            return await _properties.GetProperties(param, id);
         }
 
         [HttpPost]
