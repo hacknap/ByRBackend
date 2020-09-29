@@ -28,7 +28,7 @@ namespace ByR.Entities
         public DbSet<Role> Role { get; set; }
         public DbSet<RoleUser> RoleUser { get; set; }
 
-
+        public DbSet<Gallery> Gallery { get; set; }
 
 
     }
