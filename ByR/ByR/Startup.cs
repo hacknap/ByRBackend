@@ -14,6 +14,9 @@ using ByR.Controllers;
 using ByR.Helpers;
 using ByR.Entities;
 using ByR.Data.Repositories;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.IO;
 
 namespace ByR
 {
@@ -24,9 +27,9 @@ namespace ByR
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
-        public string DbConfig = "SqlDBFavio";
-        //DefaultConnection
-        //SqlDBFavio
+        public string DbConfig = "SqlDB";
+
+      
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -57,7 +60,14 @@ namespace ByR
             services.AddScoped<IProperty, PropertyRepository>();
             services.AddScoped<IUser, UserRepository>();
 
-           
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,7 +95,16 @@ namespace ByR
                 endpoints.MapControllers();
             });
 
-            
+
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
         }
     }
 }

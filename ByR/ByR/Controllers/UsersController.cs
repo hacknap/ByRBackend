@@ -29,6 +29,7 @@ namespace ByR.Controllers
         //obtener usuarios que no sean borrados
         // GET: api/Users
 
+        [Authorize]
         [HttpGet]
         public IQueryable<User> GetUsers()
         {
@@ -38,9 +39,9 @@ namespace ByR.Controllers
         //Obtener usuario 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(string id)
+        public User GetUserById(string id)
         {
-            return await _users.GetByIdAsync(id);
+            return _users.GerUserById(id);
         }
 
         //Obtener si el usuario y password es correcto y darle un token 
@@ -63,9 +64,9 @@ namespace ByR.Controllers
         {
 
            
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && user.Role!=null)
             {
-               
+              
                 var rol = _users.GetRoleUserDescription(user.Role);
                 await _users.CreateAsync(user);
                 
@@ -155,11 +156,7 @@ namespace ByR.Controllers
             return tokenHandler.WriteToken(token);
         }
 
-        public User GetUserById(string id)
-        {
-            return _users.GerUserById(id);
-        }
-
+     
 
 
     }
