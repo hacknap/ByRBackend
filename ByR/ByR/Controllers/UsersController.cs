@@ -87,7 +87,7 @@ namespace ByR.Controllers
 
         // PUT: api/User/5
         [HttpPut]
-        public async Task<ActionResult<User>> PutProperty(User user)
+        public async Task<ActionResult<User>> PutUser(User user)
         {
             if (ModelState.IsValid)
             {

@@ -20,22 +20,25 @@ namespace ByR.Data.Repositories
         public async Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id)
         {
             IEnumerable<Property> listProperty = null;
-            
-            
-            listProperty = await context.Property.Where(p => p.User.Id == id || p.IsDelete.Equals(false) ).ToListAsync();
-            
-           
+         
             if (param.Direction.ToLower() == "asc")
-                listProperty = await context.Property.OrderBy(p => EF.Property<object>(p, param.Column)).ToListAsync();
+                listProperty = await context.Property.OrderBy(p => EF.Property<object>(p, param.Column))
+                    .Where(p => p.IsDelete.Equals(false))
+                    .Where(x => x.User.Id == id).ToListAsync();
             else if (param.Direction.ToLower() == "desc")
-                listProperty = await context.Property.OrderByDescending(p => EF.Property<object>(p, param.Column)).ToListAsync();
+                listProperty = await context.Property.OrderByDescending(p => EF.Property<object>(p, param.Column))
+                    .Where(p => p.IsDelete.Equals(false))
+                    .Where(x => x.User.Id == id).ToListAsync();
             else
-                listProperty = await context.Property.OrderBy(p => p.Id).ToListAsync();
+                listProperty = await context.Property.OrderBy(p => p.Id)
+                    .Where(p => p.IsDelete.Equals(false))
+                    .Where(x => x.User.Id == id).ToListAsync();
 
             int total = 0;
             if (!string.IsNullOrEmpty(param.Filter))
             {
-                listProperty = listProperty.Where(ele => ele.Description.Contains(param.Filter));
+                listProperty = listProperty.Where(ele => ele.Description.Contains(param.Filter)).Where(p => p.IsDelete.Equals(false))
+                    .Where(x => x.User.Id == id);
             }
             total = listProperty.Count();
             listProperty = listProperty.Skip((param.Page - 1) * param.PageSize).Take(param.PageSize);
@@ -48,5 +51,6 @@ namespace ByR.Data.Repositories
 
             return result;
         }
+
     }
 }
