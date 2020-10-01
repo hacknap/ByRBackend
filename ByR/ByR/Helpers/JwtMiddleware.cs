@@ -31,7 +31,7 @@ namespace ByR.Helpers
                 attachUserToContext(context, userService, token);
 
             await _next(context);
-        }
+            }
 
         private void attachUserToContext(HttpContext context, UsersController userService, string token)
         {
@@ -54,7 +54,6 @@ namespace ByR.Helpers
 
                 // attach user to context on successful jwt validation
 
-            
                 context.Items["User"] = userService.GetUserById(userId);
             }
             catch

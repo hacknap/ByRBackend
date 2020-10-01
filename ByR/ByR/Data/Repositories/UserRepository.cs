@@ -22,7 +22,6 @@ namespace ByR.Data.Repositories
         public User GetUserLogin(string email, string password)
         {
             return context.User.FirstOrDefault(ele => ele.Email == email && ele.Password == password);
-
         }
 
         public string GetRoleUser(string id)
