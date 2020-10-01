@@ -42,12 +42,45 @@ namespace ByR.Controllers
                 property.Register = DateTime.UtcNow;
                 var user = await _users.FindByIdAsync(property.UserIdPro);
                 property.User = user;
-                
+
                 await _properties.CreateAsync(property);
             }
             else
             {
                 return BadRequest();
+            }
+            return property;
+        }
+        [HttpPut]
+        public async Task<ActionResult<Property>> PutProperty(Property property) {
+
+            if (ModelState.IsValid)
+            {
+                property.User = await _users.FindByIdAsync(property.User.Id);
+                await _properties.UpdateAsync(property);
+
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+            return property;
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Property>> DeleteProperty(string id){
+            var property = await _properties.FindByIdAsync(id);
+
+            if (property == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                property.IsDelete = true;
+                await _properties.UpdateAsync(property);
             }
             return property;
         }
