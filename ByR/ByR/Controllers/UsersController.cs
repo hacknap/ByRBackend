@@ -40,20 +40,34 @@ namespace ByR.Controllers
         // GET: api/Users/5
         [HttpGet("{id}")]
         public User GetUserById(string id)
-        {
+        {           
             return _users.GerUserById(id);
         }
+
 
         //Obtener si el usuario y password es correcto y darle un token 
         // GET: api/Users/Nombre/Clave
         [HttpGet("{nameUser}/{password}")]
         public ActionResult<User> GetUser(string nameUser, string password)
         {
-            var user = _users.GetUserLogin(nameUser,password);
-            var token = generateJwtToken(user);
-            user.Token = token;
-            var roleDescription = _users.GetRoleUser(user.Id);
-            user.Role = roleDescription;
+            User user= new User();
+
+            if (nameUser== null && password==null)
+            {
+                return BadRequest();
+
+            }
+            user = _users.GetUserLogin(nameUser, password);
+            if (user==null)
+            {
+                return NotFound(); 
+            }    
+                var token = generateJwtToken(user);
+                user.Token = token;
+                var roleDescription = _users.GetRoleUser(user.Id);
+                user.Role = roleDescription;
+             
+           
             return user;
         }
 
@@ -68,6 +82,12 @@ namespace ByR.Controllers
             {
               
                 var rol = _users.GetRoleUserDescription(user.Role);
+                
+                if (rol == null)
+                {
+                    return NotFound();
+                }
+
                 await _users.CreateAsync(user);
                 
                 _users.CreateRolUser( rol,user);
