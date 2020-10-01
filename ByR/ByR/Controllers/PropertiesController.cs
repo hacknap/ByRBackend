@@ -58,6 +58,7 @@ namespace ByR.Controllers
             {
                 property.User = await _users.FindByIdAsync(property.User.Id);
                 await _properties.UpdateAsync(property);
+
             }
             else
             {
