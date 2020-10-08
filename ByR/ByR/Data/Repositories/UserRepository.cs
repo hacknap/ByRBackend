@@ -46,7 +46,16 @@ namespace ByR.Data.Repositories
             roleUser.Register = DateTime.Now;
             
             await this.context.RoleUser.AddAsync(roleUser);
-            await SaveAllAsync();
+            try
+            {
+
+                await SaveAllAsync();
+            }
+            catch (Exception)
+            {
+
+              
+            }
 
 
         }
