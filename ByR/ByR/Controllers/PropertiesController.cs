@@ -85,5 +85,12 @@ namespace ByR.Controllers
             return property;
         }
 
+        [HttpGet("{id}")]
+        public Property GetPropertyById(string id)
+        {
+            return _properties.GetPropertyById(id);
+        }
+
+
     }
 }
