@@ -11,5 +11,7 @@ namespace ByR.Data.Repositories
     public interface IProperty : IGeneric<Property>
     {
         Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id);
+
+        Property GetPropertyById(string id);
     }
 }
