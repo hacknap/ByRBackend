@@ -9,6 +9,7 @@ using ByR.Entities;
 using ByR.Data.Repositories;
 using ByR.Helpers;
 using Microsoft.Extensions.Options;
+using System.IO;
 
 namespace ByR.Controllers
 {
@@ -19,12 +20,14 @@ namespace ByR.Controllers
         private readonly IProperty _properties;
         private readonly AppSettings _appSettings;
         private readonly IUser _users;
+        private readonly IGallery _gallery;
 
-        public PropertiesController(IProperty property, IOptions<AppSettings> appSettings, IUser user)
+        public PropertiesController(IProperty property, IOptions<AppSettings> appSettings, IUser user, IGallery gallery)
         {
             _properties = property;
             _appSettings = appSettings.Value;
             _users = user;
+            _gallery = gallery;
         }
 
         [HttpGet]
@@ -44,6 +47,21 @@ namespace ByR.Controllers
                 property.User = user;
 
                 await _properties.CreateAsync(property);
+
+
+                
+
+
+                //var Gallery = new Gallery
+                //{
+                //    ImageUrl = path,
+                //    IsDelete = false,                   
+                //    Property = property.Id,
+                //    Register = DateTime.UtcNow
+                //};
+
+                //await this._gallery.CreateAsync(Gallery);
+
             }
             else
             {

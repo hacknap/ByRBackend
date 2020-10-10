@@ -88,12 +88,13 @@ namespace ByR.Controllers
                     return NotFound();
                 }
 
+                user.IsDelete = false;
+                user.Register = DateTime.Now;
+
                 await _users.CreateAsync(user);
                 
                 _users.CreateRolUser( rol,user);
 
-                user.IsDelete = false;
-                user.Register = DateTime.Now;
                
             }
             else {
