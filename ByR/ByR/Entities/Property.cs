@@ -62,6 +62,11 @@ namespace ByR.Entities
         public User User { get; set; }
 
         [NotMapped]
-        public IFormFile ImageFile { get; set; }
+        public string imageurl { get; set; }
+
+        [NotMapped]
+        public string nombreimagen { get; set; }
+
+        
     }
 }

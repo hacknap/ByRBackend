@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using ByR.Data.Repositories;
 using ByR.Entities;
-using ByR.Data.Repositories;
 using ByR.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+
 
 namespace ByR.Controllers
 {
@@ -48,19 +48,43 @@ namespace ByR.Controllers
 
                 await _properties.CreateAsync(property);
 
+                ////Generando un nombre unico para la imagen
+                var path = string.Empty;
+                var guid = Guid.NewGuid().ToString();
+                var file = $"{guid}.jpg";
 
-                
+                ////obteniendo el path local en el server
+                path = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot/Propiedades",
+                    file);
+
+                byte[] imagebyte = System.Convert.FromBase64String(property.imageurl);
 
 
-                //var Gallery = new Gallery
-                //{
-                //    ImageUrl = path,
-                //    IsDelete = false,                   
-                //    Property = property.Id,
-                //    Register = DateTime.UtcNow
-                //};
+                ////guardando la imagen a partir de bytes[]
+                using (var ms = new MemoryStream(imagebyte))
+                {
+                    var img = Image.FromStream(ms);
+                    img.Save(path, ImageFormat.Jpeg);
+                };
 
-                //await this._gallery.CreateAsync(Gallery);
+
+
+                ////este campo va la base de datos
+                path = $"~/Propiedades/{file}";
+
+
+
+                var Gallery = new Gallery
+                {
+                    ImageUrl = path,
+                    IsDelete = false,                   
+                    Property = property.Id,
+                    Register = DateTime.UtcNow
+                };
+
+                await this._gallery.CreateAsync(Gallery);
 
             }
             else
@@ -70,7 +94,8 @@ namespace ByR.Controllers
             return property;
         }
         [HttpPut]
-        public async Task<ActionResult<Property>> PutProperty(Property property) {
+        public async Task<ActionResult<Property>> PutProperty(Property property)
+        {
 
             if (ModelState.IsValid)
             {
@@ -88,7 +113,8 @@ namespace ByR.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Property>> DeleteProperty(string id){
+        public async Task<ActionResult<Property>> DeleteProperty(string id)
+        {
             var property = await _properties.FindByIdAsync(id);
 
             if (property == null)
@@ -108,6 +134,8 @@ namespace ByR.Controllers
         {
             return _properties.GetPropertyById(id);
         }
+
+
 
 
     }
