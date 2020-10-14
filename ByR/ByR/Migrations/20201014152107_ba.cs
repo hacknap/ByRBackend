@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ByR.Migrations
 {
-    public partial class updateGalleryEntity : Migration
+    public partial class ba : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,6 @@ namespace ByR.Migrations
                     IsDelete = table.Column<bool>(nullable: false),
                     Register = table.Column<DateTime>(nullable: false),
                     ImageUrl = table.Column<string>(nullable: true),
-                    NameImage = table.Column<string>(nullable: true),
                     Property = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

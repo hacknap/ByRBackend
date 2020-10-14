@@ -76,6 +76,7 @@ namespace ByR.Controllers
                 var Gallery = new Gallery
                 {
                     ImageUrl = path,
+                    imagen64 = property.imageurl,
                     IsDelete = false,
                     Property = property.Id,
                     Register = DateTime.UtcNow
@@ -138,6 +139,7 @@ namespace ByR.Controllers
                 var Gallery = new Gallery
                 {
                     ImageUrl = path,
+                    imagen64 = property.imageurl,
                     IsDelete = false,                   
                     Property = property.Id,
                     Register = DateTime.UtcNow

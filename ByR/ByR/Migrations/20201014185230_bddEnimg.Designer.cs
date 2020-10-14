@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ByR.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200927005420_upEntity")]
-    partial class upEntity
+    [Migration("20201014185230_bddEnimg")]
+    partial class bddEnimg
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,15 +33,16 @@ namespace ByR.Migrations
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PropertyId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("Property")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Register")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.Property<string>("imagen64")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("PropertyId");
+                    b.HasKey("Id");
 
                     b.ToTable("Gallery");
                 });
@@ -81,7 +82,7 @@ namespace ByR.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(5,0)");
+                        .HasColumnType("decimal(16,6)");
 
                     b.Property<DateTime>("Register")
                         .HasColumnType("datetime2");
@@ -196,13 +197,6 @@ namespace ByR.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("ByR.Entities.Gallery", b =>
-                {
-                    b.HasOne("ByR.Entities.Property", "Property")
-                        .WithMany()
-                        .HasForeignKey("PropertyId");
                 });
 
             modelBuilder.Entity("ByR.Entities.Property", b =>

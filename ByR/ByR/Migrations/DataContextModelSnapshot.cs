@@ -31,14 +31,14 @@ namespace ByR.Migrations
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
 
-                    b.Property<string>("NameImage")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Property")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Register")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("imagen64")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -54,6 +54,7 @@ namespace ByR.Data.Repositories
 
         public Property GetPropertyById(string id)
         {
+            
             return context.Property.FirstOrDefault(x => x.Id == id);
         }
 

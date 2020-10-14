@@ -18,7 +18,8 @@ namespace ByR.Entities
 
         [Display(Name = "Imagen")]
         public string ImageUrl { get; set; }
-       
+        
+        public string imagen64 { get; set; }
         
         //llave foranea
         public string Property { get; set; }
