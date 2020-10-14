@@ -37,6 +37,65 @@ namespace ByR.Controllers
         }
 
         [HttpPost]
+        [Route("PostSavedImage")]
+        public async Task<ActionResult<Property>> PostSavedImage(Property property)
+        {
+            try
+            {
+
+                var _property = await this._properties.FindByIdAsync(property.Id);
+
+                //////Generando un nombre unico para la imagen
+                var path = string.Empty;
+                var guid = Guid.NewGuid().ToString();
+                var file = $"{guid}.jpg";
+
+                //////obteniendo el path local en el server
+                path = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot/Propiedades",
+                    file);
+
+                byte[] imagebyte = System.Convert.FromBase64String(property.imageurl);
+
+
+                //////guardando la imagen a partir de bytes[]
+                using (var ms = new MemoryStream(imagebyte))
+                {
+                    var img = Image.FromStream(ms);
+                    img.Save(path, ImageFormat.Jpeg);
+                };
+
+
+
+                //////este campo va la base de datos
+                path = $"~/Propiedades/{file}";
+
+
+
+                var Gallery = new Gallery
+                {
+                    ImageUrl = path,
+                    IsDelete = false,
+                    Property = property.Id,
+                    Register = DateTime.UtcNow
+                };
+
+                await this._gallery.CreateAsync(Gallery);
+                return _property;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            
+            
+        }
+
+        [HttpPost]
         public async Task<ActionResult<Property>> PostProperty(Property property)
         {
             if (ModelState.IsValid)
