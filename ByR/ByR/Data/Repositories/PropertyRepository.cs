@@ -16,6 +16,7 @@ namespace ByR.Data.Repositories
         public PropertyRepository(DataContext context) : base(context)
         {
             this.context = context;
+
         }
         public async Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id)
         {
