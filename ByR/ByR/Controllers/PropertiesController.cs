@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using ByR.Data.Repositories;
 using ByR.Entities;
-using ByR.Data.Repositories;
 using ByR.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+
 
 namespace ByR.Controllers
 {
@@ -19,18 +20,80 @@ namespace ByR.Controllers
         private readonly IProperty _properties;
         private readonly AppSettings _appSettings;
         private readonly IUser _users;
+        private readonly IGallery _gallery;
 
-        public PropertiesController(IProperty property, IOptions<AppSettings> appSettings, IUser user)
+        public PropertiesController(IProperty property, IOptions<AppSettings> appSettings, IUser user, IGallery gallery)
         {
             _properties = property;
             _appSettings = appSettings.Value;
             _users = user;
+            _gallery = gallery;
         }
 
         [HttpGet]
         public async Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id)
         {
             return await _properties.GetProperties(param, id);
+        }
+
+        [HttpPost]
+        [Route("PostSavedImage")]
+        public async Task<ActionResult<Property>> PostSavedImage(Property property)
+        {
+            try
+            {
+
+                var _property = await this._properties.FindByIdAsync(property.Id);
+
+                //////Generando un nombre unico para la imagen
+                var path = string.Empty;
+                var guid = Guid.NewGuid().ToString();
+                var file = $"{guid}.jpg";
+
+                //////obteniendo el path local en el server
+                path = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot/Propiedades",
+                    file);
+
+                byte[] imagebyte = System.Convert.FromBase64String(property.imageurl);
+
+
+                //////guardando la imagen a partir de bytes[]
+                using (var ms = new MemoryStream(imagebyte))
+                {
+                    var img = Image.FromStream(ms);
+                    img.Save(path, ImageFormat.Jpeg);
+                };
+
+
+
+                //////este campo va la base de datos
+                path = $"~/Propiedades/{file}";
+
+
+
+                var Gallery = new Gallery
+                {
+                    ImageUrl = path,
+                    imagen64 = property.imageurl,
+                    IsDelete = false,
+                    Property = property.Id,
+                    Register = DateTime.UtcNow
+                };
+
+                await this._gallery.CreateAsync(Gallery);
+                return _property;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            
+            
         }
 
         [HttpPost]
@@ -44,6 +107,46 @@ namespace ByR.Controllers
                 property.User = user;
 
                 await _properties.CreateAsync(property);
+
+                ////Generando un nombre unico para la imagen
+                var path = string.Empty;
+                var guid = Guid.NewGuid().ToString();
+                var file = $"{guid}.jpg";
+
+                ////obteniendo el path local en el server
+                path = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot/Propiedades",
+                    file);
+
+                byte[] imagebyte = System.Convert.FromBase64String(property.imageurl);
+
+
+                ////guardando la imagen a partir de bytes[]
+                using (var ms = new MemoryStream(imagebyte))
+                {
+                    var img = Image.FromStream(ms);
+                    img.Save(path, ImageFormat.Jpeg);
+                };
+
+
+
+                ////este campo va la base de datos
+                path = $"~/Propiedades/{file}";
+
+
+
+                var Gallery = new Gallery
+                {
+                    ImageUrl = path,
+                    imagen64 = property.imageurl,
+                    IsDelete = false,                   
+                    Property = property.Id,
+                    Register = DateTime.UtcNow
+                };
+
+                await this._gallery.CreateAsync(Gallery);
+
             }
             else
             {
@@ -52,7 +155,8 @@ namespace ByR.Controllers
             return property;
         }
         [HttpPut]
-        public async Task<ActionResult<Property>> PutProperty(Property property) {
+        public async Task<ActionResult<Property>> PutProperty(Property property)
+        {
 
             if (ModelState.IsValid)
             {
@@ -70,7 +174,8 @@ namespace ByR.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Property>> DeleteProperty(string id){
+        public async Task<ActionResult<Property>> DeleteProperty(string id)
+        {
             var property = await _properties.FindByIdAsync(id);
 
             if (property == null)
@@ -90,6 +195,8 @@ namespace ByR.Controllers
         {
             return _properties.GetPropertyById(id);
         }
+
+
 
 
     }

@@ -1,4 +1,5 @@
 ﻿using ByR.Data.Repositories;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -60,6 +61,12 @@ namespace ByR.Entities
 
         public User User { get; set; }
 
+        [NotMapped]
+        public string imageurl { get; set; }
 
+        [NotMapped]
+        public string nombreimagen { get; set; }
+
+        
     }
 }

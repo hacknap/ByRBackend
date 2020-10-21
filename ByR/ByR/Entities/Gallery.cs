@@ -1,4 +1,5 @@
-﻿    using System;
+﻿using ByR.Data.Repositories;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 namespace ByR.Entities
 {
     [Table("Gallery")]
-    public class Gallery
+    public class Gallery : IEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
@@ -18,7 +19,9 @@ namespace ByR.Entities
         [Display(Name = "Imagen")]
         public string ImageUrl { get; set; }
         
+        public string imagen64 { get; set; }
+        
         //llave foranea
-        public Property Property { get; set; }
+        public string Property { get; set; }
     }
 }

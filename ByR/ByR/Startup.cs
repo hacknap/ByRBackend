@@ -59,6 +59,8 @@ namespace ByR
             //Data base repositories
             services.AddScoped<IProperty, PropertyRepository>();
             services.AddScoped<IUser, UserRepository>();
+            services.AddScoped<IGallery, GalleryRepository>();
+
 
             services.AddSwaggerGen(c =>
             {
@@ -81,7 +83,7 @@ namespace ByR
             }
             if (env.IsProduction())
             {
-                DbConfig = "SqlDBRemoto";
+                DbConfig = "DefaultConnection";
 
             }
             app.UseRouting();

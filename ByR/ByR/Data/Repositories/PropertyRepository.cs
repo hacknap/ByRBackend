@@ -16,6 +16,7 @@ namespace ByR.Data.Repositories
         public PropertyRepository(DataContext context) : base(context)
         {
             this.context = context;
+
         }
         public async Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id)
         {
@@ -54,6 +55,7 @@ namespace ByR.Data.Repositories
 
         public Property GetPropertyById(string id)
         {
+            
             return context.Property.FirstOrDefault(x => x.Id == id);
         }
 
