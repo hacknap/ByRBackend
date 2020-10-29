@@ -7,6 +7,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,6 +29,22 @@ namespace ByR.Controllers
             _appSettings = appSettings.Value;
             _users = user;
             _gallery = gallery;
+        }
+
+        [HttpGet]
+        [Route("GetPropertyByUserBuyer/")]
+        public ActionResult<PageAndSortResponse<Property>> GetPropertyByUserBuyer(string serch)
+        {
+
+            var propertyList = this._properties.GetPropertyBySerch(serch);
+
+            var response = new PageAndSortResponse<Property>
+            {
+                Data = propertyList,
+                TotalRows = propertyList.Count()
+            };
+
+            return response;
         }
 
         [HttpGet]
@@ -92,8 +109,8 @@ namespace ByR.Controllers
                 throw;
             }
 
-            
-            
+
+
         }
 
         [HttpPost]
@@ -105,9 +122,7 @@ namespace ByR.Controllers
                 property.Register = DateTime.UtcNow;
                 var user = await _users.FindByIdAsync(property.UserIdPro);
                 property.User = user;
-
-                await _properties.CreateAsync(property);
-
+                property.imagen64portada = property.imageurl;
                 ////Generando un nombre unico para la imagen
                 var path = string.Empty;
                 var guid = Guid.NewGuid().ToString();
@@ -129,23 +144,11 @@ namespace ByR.Controllers
                     img.Save(path, ImageFormat.Jpeg);
                 };
 
-
-
                 ////este campo va la base de datos
                 path = $"~/Propiedades/{file}";
 
-
-
-                var Gallery = new Gallery
-                {
-                    ImageUrl = path,
-                    imagen64 = property.imageurl,
-                    IsDelete = false,                   
-                    Property = property.Id,
-                    Register = DateTime.UtcNow
-                };
-
-                await this._gallery.CreateAsync(Gallery);
+                property.imageurl = path;
+                await _properties.CreateAsync(property);
 
             }
             else
@@ -191,13 +194,19 @@ namespace ByR.Controllers
         }
 
         [HttpGet("{id}")]
-        public Property GetPropertyById(string id)
+        public async Task<ActionResult<PageAndSortResponse<Property>>> GetPropertyById(string id)
         {
-            return _properties.GetPropertyById(id);
+            var property = _properties.GetPropertyById(id);
+
+            var model = new PageAndSortResponse<Property>()
+            {
+                Data = property,
+                TotalRows = property.Count()
+            };
+
+            return model;
+
         }
-
-
-
 
     }
 }

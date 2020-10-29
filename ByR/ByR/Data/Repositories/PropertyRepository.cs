@@ -21,7 +21,7 @@ namespace ByR.Data.Repositories
         public async Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id)
         {
             IEnumerable<Property> listProperty = null;
-         
+
             if (param.Direction.ToLower() == "asc")
                 listProperty = await context.Property.OrderBy(p => EF.Property<object>(p, param.Column))
                     .Where(p => p.IsDelete.Equals(false))
@@ -53,10 +53,22 @@ namespace ByR.Data.Repositories
             return result;
         }
 
-        public Property GetPropertyById(string id)
+        public List<Property> GetPropertyById(string id)
         {
-            
-            return context.Property.FirstOrDefault(x => x.Id == id);
+
+            return context.Property.Where(p => p.Id.Equals(id)).ToList();
+        }
+
+        public List<Property> GetPropertyBySerch(string serch)
+        {
+            return context.Property.Include(p => p.User)
+                                   .Where(p => p.Description.Contains(serch) ||
+                                            p.Direction.Contains(serch) ||
+                                            p.User.Name.Contains(serch) ||
+                                            p.Bathrooms.ToString().Contains(serch) ||
+                                            p.Bedrooms.ToString().Contains(serch) ||
+                                            p.Price.ToString().Contains(serch) ||
+                                            p.Size.ToString().Contains(serch)).ToList();
         }
 
     }

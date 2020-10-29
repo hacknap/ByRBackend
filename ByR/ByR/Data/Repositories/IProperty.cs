@@ -12,6 +12,8 @@ namespace ByR.Data.Repositories
     {
         Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id);
 
-        Property GetPropertyById(string id);
+        List<Property> GetPropertyById(string id);
+
+        List<Property> GetPropertyBySerch(string serch);
     }
 }

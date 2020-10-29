@@ -18,11 +18,13 @@ namespace ByR.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUser _users;
+        private readonly IRolUser _roluser;
         private readonly AppSettings _appSettings;
-        public UsersController(IUser users, IOptions<AppSettings> appSettings)
+        public UsersController(IUser users, IRolUser rolUser, IOptions<AppSettings> appSettings)
         {
             this._users = users;
             _appSettings = appSettings.Value;
+            this._roluser = rolUser;
         }
 
 
@@ -40,7 +42,7 @@ namespace ByR.Controllers
         // GET: api/Users/5
         [HttpGet("{id}")]
         public User GetUserById(string id)
-        {           
+        {
             return _users.GerUserById(id);
         }
 
@@ -50,24 +52,24 @@ namespace ByR.Controllers
         [HttpGet("{nameUser}/{password}")]
         public ActionResult<User> GetUser(string nameUser, string password)
         {
-            User user= new User();
+            User user = new User();
 
-            if (nameUser== null && password==null)
+            if (nameUser == null && password == null)
             {
                 return BadRequest();
 
             }
             user = _users.GetUserLogin(nameUser, password);
-            if (user==null)
+            if (user == null)
             {
-                return NotFound(); 
-            }    
-                var token = generateJwtToken(user);
-                user.Token = token;
-                var roleDescription = _users.GetRoleUser(user.Id);
-                user.Role = roleDescription;
-             
-           
+                return NotFound();
+            }
+            var token = generateJwtToken(user);
+            user.Token = token;
+            var roleDescription = _users.GetRoleUser(user.Id);
+            user.Role = roleDescription;
+
+
             return user;
         }
 
@@ -77,12 +79,12 @@ namespace ByR.Controllers
         public async Task<ActionResult<User>> PostUser(User user)
         {
 
-           
-            if (ModelState.IsValid && user.Role!=null)
+
+            if (ModelState.IsValid && user.Role != null)
             {
-              
+
                 var rol = _users.GetRoleUserDescription(user.Role);
-                
+
                 if (rol == null)
                 {
                     return NotFound();
@@ -92,15 +94,25 @@ namespace ByR.Controllers
                 user.Register = DateTime.Now;
 
                 await _users.CreateAsync(user);
-                
-                _users.CreateRolUser( rol,user);
 
-               
+                var roluser = new RoleUser()
+                {
+                    IsDelete = false,
+                    Register = DateTime.Now,
+                    Role = rol,
+                    User = user
+                };
+
+                await this._roluser.CreateAsync(roluser);
+
+
+
             }
-            else {
+            else
+            {
                 return BadRequest();
             }
-               
+
             return user;
         }
 
@@ -135,11 +147,11 @@ namespace ByR.Controllers
             }
 
             await _users.DeleteAsync(user);
-          
+
             return user;
         }
 
-      
+
 
 
 
@@ -177,7 +189,8 @@ namespace ByR.Controllers
             return tokenHandler.WriteToken(token);
         }
 
-     
+
+
 
 
     }
