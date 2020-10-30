@@ -33,10 +33,14 @@ namespace ByR.Controllers
 
         [HttpGet]
         [Route("GetPropertyByUserBuyer/")]
-        public ActionResult<PageAndSortResponse<Property>> GetPropertyByUserBuyer(string serch)
+        public ActionResult<PageAndSortResponse<Property>> GetPropertyByUserBuyer
+            (string serch,double? preciodesde, double? preciohasta, double? tamaniodesde, double? tamaniohasta, double? ncuartos, double? nbanios)
         {
+     
 
-            var propertyList = this._properties.GetPropertyBySerch(serch);
+            var propertyList = this._properties.GetPropertyBySerch(serch, Convert.ToDecimal(preciodesde), Convert.ToDecimal(preciohasta),
+                                                                    Convert.ToDecimal(tamaniodesde), Convert.ToDecimal(tamaniohasta),
+                                                                    Convert.ToDecimal(ncuartos), Convert.ToDecimal(nbanios));
 
             var response = new PageAndSortResponse<Property>
             {

@@ -59,17 +59,22 @@ namespace ByR.Data.Repositories
             return context.Property.Where(p => p.Id.Equals(id)).ToList();
         }
 
-        public List<Property> GetPropertyBySerch(string serch)
+        public List<Property> GetPropertyBySerch(string serch, decimal preciodesde, decimal preciohasta,
+                                                    decimal tamaniodesde, decimal tamaniohasta, decimal nbanios, decimal ncuartos)
         {
-            return context.Property.Include(p => p.User)
+            var model = context.Property.Include(p => p.User)
                                    .Where(p => p.Description.Contains(serch) ||
                                             p.Direction.Contains(serch) ||
                                             p.User.Name.Contains(serch) ||
-                                            p.Bathrooms.ToString().Contains(serch) ||
-                                            p.Bedrooms.ToString().Contains(serch) ||
-                                            p.Price.ToString().Contains(serch) ||
-                                            p.Size.ToString().Contains(serch)).ToList();
+                                            (p.Bathrooms > 0 && p.Bathrooms <= nbanios) ||
+                                            (p.Bedrooms > 0 && p.Bedrooms <= ncuartos) ||
+                                            (p.Price >= preciodesde && p.Price <= preciohasta )||
+                                            (p.Size >= tamaniodesde && p.Size <= tamaniohasta)).ToList();
+
+            return model;
         }
+
+            
 
     }
 }
