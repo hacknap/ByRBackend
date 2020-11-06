@@ -56,7 +56,8 @@ namespace ByR.Data.Repositories
         public List<Property> GetPropertyById(string id)
         {
 
-            return context.Property.Where(p => p.Id.Equals(id)).ToList();
+            return context.Property.Include(p => p.User)
+                                    .Where(p => p.Id.Equals(id)).ToList();
         }
 
         public List<Property> GetPropertyBySerch(string serch, decimal preciodesde, decimal preciohasta,
