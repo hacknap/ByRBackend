@@ -41,9 +41,11 @@ namespace ByR.Controllers
         //Obtener usuario 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public User GetUserById(string id)
+        public ActionResult<User> GetUserById(string id)
         {
-            return _users.GerUserById(id);
+
+            var user= _users.GerUserById(id);
+            return user;
         }
 
 

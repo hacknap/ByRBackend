@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ByR.Data.Repositories
 {
@@ -14,10 +15,6 @@ namespace ByR.Data.Repositories
             this.context = context;
         }
 
-        public User GerUserById(string id)
-        {
-            return context.User.FirstOrDefault(x => x.Id == id);
-        }
 
         public User GetUserLogin(string email, string password)
         {
@@ -60,6 +57,9 @@ namespace ByR.Data.Repositories
 
         }
 
-
+        public User GerUserById(string id)
+        {
+            return context.User.Find(id);
+        }
     }
 }
