@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ByR.Controllers
 {
+  
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -26,18 +27,14 @@ namespace ByR.Controllers
             _appSettings = appSettings.Value;
             this._roluser = rolUser;
         }
-
-
         //obtener usuarios que no sean borrados
         // GET: api/Users
-
-        [Authorize]
+       
         [HttpGet]
-        public IQueryable<User> GetUsers()
+        public async Task<ActionResult<PageAndSortResponse<User>>> GetUsersPageAndSort([FromQuery] PageAndSortRequest param)
         {
-            return this._users.GetAll().Where(c => c.IsDelete.Equals(false));
+            return await _users.GetUsersPageAndSort(param);
         }
-
         //Obtener usuario 
         // GET: api/Users/5
         [HttpGet("{id}")]
@@ -135,9 +132,6 @@ namespace ByR.Controllers
 
             return user;
         }
-
-
-        [Authorize]
         // DELETE: api/User/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUsuario(string id)
@@ -147,9 +141,11 @@ namespace ByR.Controllers
             {
                 return NotFound();
             }
-
-            await _users.DeleteAsync(user);
-
+            else 
+            {
+                user.IsDelete = true;
+                await _users.UpdateAsync(user);
+            }
             return user;
         }
 

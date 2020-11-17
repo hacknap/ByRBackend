@@ -50,7 +50,7 @@ namespace ByR.Controllers
 
             return response;
         }
-
+        
         [HttpGet]
         public async Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id)
         {
