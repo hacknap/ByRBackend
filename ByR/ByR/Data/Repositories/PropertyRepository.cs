@@ -60,19 +60,56 @@ namespace ByR.Data.Repositories
                                     .Where(p => p.Id.Equals(id)).ToList();
         }
 
+
+        public async Task<Property> GetPropertyByPropertyId(string id) 
+        {
+            return await context.Property.Include(p => p.User).Where(p => p.Id.Equals(id)).FirstOrDefaultAsync();
+        }
+
+        public IQueryable<Property> GetAllProperties()
+        {
+            return  context.Property.Include(P=>P.User).AsQueryable<Property>();
+        }
         public List<Property> GetPropertyBySerch(string serch, decimal preciodesde, decimal preciohasta,
                                                     decimal tamaniodesde, decimal tamaniohasta, decimal nbanios, decimal ncuartos)
         {
-            var model = context.Property.Include(p => p.User)
-                                   .Where(p => p.Description.Contains(serch) ||
-                                            p.Direction.Contains(serch) ||
-                                            p.User.Name.Contains(serch) ||
-                                            (p.Bathrooms > 0 && p.Bathrooms <= nbanios) ||
-                                            (p.Bedrooms > 0 && p.Bedrooms <= ncuartos) ||
-                                            (p.Price >= preciodesde && p.Price <= preciohasta )||
-                                            (p.Size >= tamaniodesde && p.Size <= tamaniohasta)).ToList();
 
-            return model;
+            var PropertyListResult = new List<Property>();
+
+            if (serch!=null)
+            {               
+                PropertyListResult.AddRange(context.Property.Where(p => p.User.Name.Contains(serch)).ToList());
+                PropertyListResult.AddRange(context.Property.Where(p => p.Description.Contains(serch)).ToList());
+                PropertyListResult.AddRange(context.Property.Where(p => p.Direction.Contains(serch)).ToList());
+
+            }
+
+            if (preciohasta>0)
+            {
+                PropertyListResult.AddRange(context.Property.Where(p => p.Price>= preciodesde && p.Price <= preciohasta).ToList());
+            }
+
+            if (tamaniohasta>0)
+            {
+                PropertyListResult.AddRange(context.Property.Where(p => p.Size >= tamaniodesde && p.Size <= tamaniohasta).ToList());
+            }
+
+            if (nbanios>0)
+            {
+                PropertyListResult.AddRange(context.Property.Where(p => p.Bathrooms >= 0 && p.Bathrooms <= nbanios).ToList());
+            }
+
+            if (ncuartos>0)
+            {
+                PropertyListResult.AddRange(context.Property.Where(p => p.Bedrooms >= 0 && p.Bedrooms <= ncuartos).ToList());
+            }
+
+            for (int i = 0; i < PropertyListResult.Count(); i++)
+            {
+
+            }
+
+            return PropertyListResult;
         }
 
             

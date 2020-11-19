@@ -27,7 +27,7 @@ namespace ByR
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
-        public string DbConfig = "SqlDB";
+        public string DbConfig = "DefaultConnection";
 
       
 

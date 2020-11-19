@@ -34,13 +34,21 @@ namespace ByR.Controllers
         [HttpGet]
         [Route("GetPropertyByUserBuyer/")]
         public ActionResult<PageAndSortResponse<Property>> GetPropertyByUserBuyer
-            (string serch,double? preciodesde, double? preciohasta, double? tamaniodesde, double? tamaniohasta, double? ncuartos, double? nbanios)
+            (string serch,double preciodesde, double? preciohasta, double? tamaniodesde, double? tamaniohasta, double? ncuartos, double? nbanios)
         {
-     
+            
 
-            var propertyList = this._properties.GetPropertyBySerch(serch, Convert.ToDecimal(preciodesde), Convert.ToDecimal(preciohasta),
-                                                                    Convert.ToDecimal(tamaniodesde), Convert.ToDecimal(tamaniohasta),
-                                                                    Convert.ToDecimal(ncuartos), Convert.ToDecimal(nbanios));
+            var propertyList = this._properties.GetAllProperties().Where(p => p.Description.Contains(serch)||
+                                                                    p.Direction.Contains(serch)||
+                                                                     p.User.Name.Contains(serch) ||
+                                                                     p.User.Email.Contains(serch) ||
+                                                                    (p.Price >= Convert.ToDecimal(preciodesde) && p.Price <= Convert.ToDecimal(preciohasta))||
+                                                                    (p.Size >= Convert.ToDecimal(tamaniodesde) && p.Size <= Convert.ToDecimal(tamaniohasta))||
+                                                                    (p.Bathrooms > 0 && p.Bathrooms <= Convert.ToDecimal(nbanios))||
+                                                                    (p.Bedrooms > 0 && p.Bedrooms <= Convert.ToDecimal(ncuartos)));
+
+            
+
 
             var response = new PageAndSortResponse<Property>
             {
@@ -56,6 +64,23 @@ namespace ByR.Controllers
         {
             return await _properties.GetProperties(param, id);
         }
+
+       
+        [HttpGet]
+        [Route("GetPropertiesInit")]
+        public async Task<ActionResult<PageAndSortResponse<Property>>> GetPropertiesInit()
+        {
+            var model = _properties.GetAllProperties();
+
+            var response = new PageAndSortResponse<Property>()
+            {
+                Data = model,
+                TotalRows = model.Count()
+            };
+
+            return response;
+        }
+
 
         [HttpPost]
         [Route("PostSavedImage")]
