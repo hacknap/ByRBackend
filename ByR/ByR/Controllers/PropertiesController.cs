@@ -4,6 +4,7 @@ using ByR.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -36,16 +37,27 @@ namespace ByR.Controllers
         public ActionResult<PageAndSortResponse<Property>> GetPropertyByUserBuyer
             (string serch,double preciodesde, double? preciohasta, double? tamaniodesde, double? tamaniohasta, double? ncuartos, double? nbanios)
         {
-            
 
-            var propertyList = this._properties.GetAllProperties().Where(p => p.Description.Contains(serch)||
-                                                                    p.Direction.Contains(serch)||
-                                                                     p.User.Name.Contains(serch) ||
-                                                                     p.User.Email.Contains(serch) ||
-                                                                    (p.Price >= Convert.ToDecimal(preciodesde) && p.Price <= Convert.ToDecimal(preciohasta))||
-                                                                    (p.Size >= Convert.ToDecimal(tamaniodesde) && p.Size <= Convert.ToDecimal(tamaniohasta))||
-                                                                    (p.Bathrooms > 0 && p.Bathrooms <= Convert.ToDecimal(nbanios))||
-                                                                    (p.Bedrooms > 0 && p.Bedrooms <= Convert.ToDecimal(ncuartos)));
+            IQueryable<Property> propertyList ;
+
+            if (serch == null && preciohasta == 0 && tamaniohasta == 0 && nbanios == 0 && ncuartos == 0)
+            {
+                 propertyList = this._properties.GetAllProperties();
+            }
+
+            else
+            {
+                propertyList = this._properties.GetAllProperties().Where(p => p.Description.Contains(serch) ||
+                                                                        p.Direction.Contains(serch) ||
+                                                                        p.User.Name.Contains(serch) ||
+                                                                        p.User.Email.Contains(serch) ||
+                                                                       (p.Price >= Convert.ToDecimal(preciodesde) && p.Price <= Convert.ToDecimal(preciohasta)) ||
+                                                                       (p.Size >= Convert.ToDecimal(tamaniodesde) && p.Size <= Convert.ToDecimal(tamaniohasta)) ||
+                                                                       (p.Bathrooms > 0 && p.Bathrooms <= Convert.ToDecimal(nbanios)) ||
+                                                                       (p.Bedrooms > 0 && p.Bedrooms <= Convert.ToDecimal(ncuartos)));
+
+            }
+           
 
             
 

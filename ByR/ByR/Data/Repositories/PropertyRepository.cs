@@ -76,38 +76,44 @@ namespace ByR.Data.Repositories
 
             var PropertyListResult = new List<Property>();
 
-            if (serch!=null)
-            {               
-                PropertyListResult.AddRange(context.Property.Where(p => p.User.Name.Contains(serch)).ToList());
-                PropertyListResult.AddRange(context.Property.Where(p => p.Description.Contains(serch)).ToList());
-                PropertyListResult.AddRange(context.Property.Where(p => p.Direction.Contains(serch)).ToList());
-
-            }
-
-            if (preciohasta>0)
+            if (serch == null && preciohasta == 0 && tamaniohasta == 0 && nbanios == 0 && ncuartos == 0)
             {
-                PropertyListResult.AddRange(context.Property.Where(p => p.Price>= preciodesde && p.Price <= preciohasta).ToList());
+                PropertyListResult = context.Property.Include(p => p.User).ToList();
+            }
+            else {
+                if (serch != null)
+                {
+                    PropertyListResult.AddRange(context.Property.Where(p => p.User.Name.Contains(serch)).ToList());
+                    PropertyListResult.AddRange(context.Property.Where(p => p.Description.Contains(serch)).ToList());
+                    PropertyListResult.AddRange(context.Property.Where(p => p.Direction.Contains(serch)).ToList());
+                }
+
+                if (preciohasta > 0)
+                {
+                    PropertyListResult.AddRange(context.Property.Where(p => p.Price >= preciodesde && p.Price <= preciohasta).ToList());
+                }
+
+                if (tamaniohasta > 0)
+                {
+                    PropertyListResult.AddRange(context.Property.Where(p => p.Size >= tamaniodesde && p.Size <= tamaniohasta).ToList());
+                }
+
+                if (nbanios > 0)
+                {
+                    PropertyListResult.AddRange(context.Property.Where(p => p.Bathrooms >= 0 && p.Bathrooms <= nbanios).ToList());
+                }
+
+                if (ncuartos > 0)
+                {
+                    PropertyListResult.AddRange(context.Property.Where(p => p.Bedrooms >= 0 && p.Bedrooms <= ncuartos).ToList());
+                }
+
+
             }
 
-            if (tamaniohasta>0)
-            {
-                PropertyListResult.AddRange(context.Property.Where(p => p.Size >= tamaniodesde && p.Size <= tamaniohasta).ToList());
-            }
+          
 
-            if (nbanios>0)
-            {
-                PropertyListResult.AddRange(context.Property.Where(p => p.Bathrooms >= 0 && p.Bathrooms <= nbanios).ToList());
-            }
-
-            if (ncuartos>0)
-            {
-                PropertyListResult.AddRange(context.Property.Where(p => p.Bedrooms >= 0 && p.Bedrooms <= ncuartos).ToList());
-            }
-
-            for (int i = 0; i < PropertyListResult.Count(); i++)
-            {
-
-            }
+           
 
             return PropertyListResult;
         }
