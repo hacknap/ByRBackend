@@ -29,7 +29,7 @@ namespace ByR.Data.Repositories
             int total = 0;
             if (!string.IsNullOrEmpty(param.Filter))
             {
-                listUser = listUser.Where(ele => ele.Name.Contains(param.Filter)).Where(p => p.IsDelete.Equals(false));
+                listUser = listUser.Where(ele => ele.Name.Contains(param.Filter) || ele.Ci.Contains(param.Filter)).Where(p => p.IsDelete.Equals(false));
             }
             total = listUser.Count();
             listUser = listUser.Skip((param.Page - 1) * param.PageSize).Take(param.PageSize);
