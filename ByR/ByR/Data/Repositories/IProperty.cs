@@ -10,8 +10,11 @@ namespace ByR.Data.Repositories
 {
     public interface IProperty : IGeneric<Property>
     {
+        IQueryable<Property> GetAllProperties();
         Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id);
 
-        Property GetPropertyById(string id);
+        List<Property> GetPropertyById(string id);
+        Task<Property> GetPropertyByPropertyId(string id);
+        List<Property> GetPropertyBySerch(string serch, decimal preciodesde, decimal preciohasta, decimal tamaniodesde, decimal tamaniohasta, decimal nbanios, decimal ncuartos);
     }
 }

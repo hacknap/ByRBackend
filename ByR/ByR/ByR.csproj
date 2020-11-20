@@ -3,7 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-
+  <PropertyGroup>
+    <IsPackable> true </IsPackable>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Migrations\20200926024305_updatedEntitiesb.cs" />
     <Compile Remove="Migrations\20200926024305_updatedEntitiesb.Designer.cs" />

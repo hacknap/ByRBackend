@@ -27,7 +27,7 @@ namespace ByR
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
-        public string DbConfig = "SqlDBFavio";
+        public string DbConfig = "SqlDB";
 
       
 
@@ -60,6 +60,9 @@ namespace ByR
             services.AddScoped<IProperty, PropertyRepository>();
             services.AddScoped<IUser, UserRepository>();
             services.AddScoped<IGallery, GalleryRepository>();
+            services.AddScoped<IRolUser, RolUserRepository>();
+       
+
 
 
             services.AddSwaggerGen(c =>

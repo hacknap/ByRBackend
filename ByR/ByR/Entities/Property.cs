@@ -61,12 +61,12 @@ namespace ByR.Entities
 
         public User User { get; set; }
 
-        [NotMapped]
+        [Display(Name = "Portada")]
         public string imageurl { get; set; }
 
-        [NotMapped]
-        public string nombreimagen { get; set; }
+        [Display(Name = "imagen64portada")]
+        public string imagen64portada { get; set; }
 
-        
+
     }
 }

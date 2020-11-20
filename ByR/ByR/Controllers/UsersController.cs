@@ -13,35 +13,36 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ByR.Controllers
 {
+  
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
         private readonly IUser _users;
+        private readonly IRolUser _roluser;
         private readonly AppSettings _appSettings;
-        public UsersController(IUser users, IOptions<AppSettings> appSettings)
+        public UsersController(IUser users, IRolUser rolUser, IOptions<AppSettings> appSettings)
         {
             this._users = users;
             _appSettings = appSettings.Value;
+            this._roluser = rolUser;
         }
-
-
         //obtener usuarios que no sean borrados
         // GET: api/Users
-
-        [Authorize]
+       
         [HttpGet]
-        public IQueryable<User> GetUsers()
+        public async Task<ActionResult<PageAndSortResponse<User>>> GetUsersPageAndSort([FromQuery] PageAndSortRequest param)
         {
-            return this._users.GetAll().Where(c => c.IsDelete.Equals(false));
+            return await _users.GetUsersPageAndSort(param);
         }
-
         //Obtener usuario 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public User GetUserById(string id)
-        {           
-            return _users.GerUserById(id);
+        public ActionResult<User> GetUserById(string id)
+        {
+
+            var user= _users.GerUserById(id);
+            return user;
         }
 
 
@@ -50,24 +51,24 @@ namespace ByR.Controllers
         [HttpGet("{nameUser}/{password}")]
         public ActionResult<User> GetUser(string nameUser, string password)
         {
-            User user= new User();
+            User user = new User();
 
-            if (nameUser== null && password==null)
+            if (nameUser == null && password == null)
             {
                 return BadRequest();
 
             }
             user = _users.GetUserLogin(nameUser, password);
-            if (user==null)
+            if (user == null)
             {
-                return NotFound(); 
-            }    
-                var token = generateJwtToken(user);
-                user.Token = token;
-                var roleDescription = _users.GetRoleUser(user.Id);
-                user.Role = roleDescription;
-             
-           
+                return NotFound();
+            }
+            var token = generateJwtToken(user);
+            user.Token = token;
+            var roleDescription = _users.GetRoleUser(user.Id);
+            user.Role = roleDescription;
+
+
             return user;
         }
 
@@ -77,12 +78,12 @@ namespace ByR.Controllers
         public async Task<ActionResult<User>> PostUser(User user)
         {
 
-           
-            if (ModelState.IsValid && user.Role!=null)
+
+            if (ModelState.IsValid && user.Role != null)
             {
-              
+
                 var rol = _users.GetRoleUserDescription(user.Role);
-                
+
                 if (rol == null)
                 {
                     return NotFound();
@@ -92,15 +93,25 @@ namespace ByR.Controllers
                 user.Register = DateTime.Now;
 
                 await _users.CreateAsync(user);
-                
-                _users.CreateRolUser( rol,user);
 
-               
+                var roluser = new RoleUser()
+                {
+                    IsDelete = false,
+                    Register = DateTime.Now,
+                    Role = rol,
+                    User = user
+                };
+
+                await this._roluser.CreateAsync(roluser);
+
+
+
             }
-            else {
+            else
+            {
                 return BadRequest();
             }
-               
+
             return user;
         }
 
@@ -121,9 +132,6 @@ namespace ByR.Controllers
 
             return user;
         }
-
-
-        [Authorize]
         // DELETE: api/User/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUsuario(string id)
@@ -133,13 +141,15 @@ namespace ByR.Controllers
             {
                 return NotFound();
             }
-
-            await _users.DeleteAsync(user);
-          
+            else 
+            {
+                user.IsDelete = true;
+                await _users.UpdateAsync(user);
+            }
             return user;
         }
 
-      
+
 
 
 
@@ -177,7 +187,8 @@ namespace ByR.Controllers
             return tokenHandler.WriteToken(token);
         }
 
-     
+
+
 
 
     }
