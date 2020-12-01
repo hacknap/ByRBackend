@@ -21,7 +21,7 @@ namespace ByR.Data.Repositories
             List<Gallery> listPhotos = null;
 
             //listPhotos = context.Gallery.FirstOrDefault(p => p.Property == id);
-            listPhotos = context.Gallery.Where(p => p.Property == id).ToList();
+            listPhotos = context.Gallery.Where(p => p.Property == id).Where(x => x.IsDelete == false).ToList();
                 
             return listPhotos;
 

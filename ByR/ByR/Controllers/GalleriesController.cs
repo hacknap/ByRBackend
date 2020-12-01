@@ -28,7 +28,20 @@ namespace ByR.Controllers
         {
             return await _gallery.GetGalleryByPropertyId(id);
         }
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Gallery>> DeleteImage(string id)
+        {
+            var image = await _gallery.FindByIdAsync(id);
+            if (image == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                image.IsDelete = true;
+                await _gallery.UpdateAsync(image);
+            }
+            return image;
+        }
     }
-
-    
 }

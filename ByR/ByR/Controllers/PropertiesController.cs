@@ -35,14 +35,14 @@ namespace ByR.Controllers
         [HttpGet]
         [Route("GetPropertyByUserBuyer/")]
         public ActionResult<PageAndSortResponse<Property>> GetPropertyByUserBuyer
-            (string serch,double preciodesde, double? preciohasta, double? tamaniodesde, double? tamaniohasta, double? ncuartos, double? nbanios)
+            (string serch, double preciodesde, double? preciohasta, double? tamaniodesde, double? tamaniohasta, double? ncuartos, double? nbanios)
         {
 
-            IQueryable<Property> propertyList ;
+            IQueryable<Property> propertyList;
 
             if (serch == null && preciohasta == 0 && tamaniohasta == 0 && nbanios == 0 && ncuartos == 0)
             {
-                 propertyList = this._properties.GetAllProperties();
+                propertyList = this._properties.GetAllProperties();
             }
 
             else
@@ -57,9 +57,9 @@ namespace ByR.Controllers
                                                                        (p.Bedrooms > 0 && p.Bedrooms <= Convert.ToDecimal(ncuartos)));
 
             }
-           
 
-            
+
+
 
 
             var response = new PageAndSortResponse<Property>
@@ -70,14 +70,14 @@ namespace ByR.Controllers
 
             return response;
         }
-        
+
         [HttpGet]
         public async Task<ActionResult<PageAndSortResponse<Property>>> GetProperties([FromQuery] PageAndSortRequest param, string id)
         {
             return await _properties.GetProperties(param, id);
         }
 
-       
+
         [HttpGet]
         [Route("GetPropertiesInit")]
         public async Task<ActionResult<PageAndSortResponse<Property>>> GetPropertiesInit()
@@ -204,7 +204,8 @@ namespace ByR.Controllers
 
             if (ModelState.IsValid)
             {
-                property.User = await _users.FindByIdAsync(property.User.Id);
+                property.User = await _users.FindByIdAsync(property.UserIdPro);
+                property.imagen64portada = property.imageurl;
                 await _properties.UpdateAsync(property);
 
             }
