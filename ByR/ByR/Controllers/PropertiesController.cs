@@ -47,15 +47,31 @@ namespace ByR.Controllers
 
             else
             {
-                propertyList = this._properties.GetAllProperties().Where(p => p.Description.Contains(serch) ||
-                                                                        p.Direction.Contains(serch) ||
-                                                                        p.User.Name.Contains(serch) ||
-                                                                        p.User.Email.Contains(serch) ||
-                                                                       (p.Price >= Convert.ToDecimal(preciodesde) && p.Price <= Convert.ToDecimal(preciohasta)) ||
-                                                                       (p.Size >= Convert.ToDecimal(tamaniodesde) && p.Size <= Convert.ToDecimal(tamaniohasta)) ||
-                                                                       (p.Bathrooms > 0 && p.Bathrooms <= Convert.ToDecimal(nbanios)) ||
-                                                                       (p.Bedrooms > 0 && p.Bedrooms <= Convert.ToDecimal(ncuartos)));
+                propertyList= this._properties.GetAllProperties();
 
+                if (serch != null)
+                {
+                    propertyList = propertyList.Where(p => p.Description.Contains(serch) ||
+                                                      p.Direction.Contains(serch) ||
+                                                      p.User.Name.Contains(serch) ||
+                                                      p.User.Email.Contains(serch) );
+                }
+                if (preciohasta > 0)
+                {
+                    propertyList = propertyList.Where(p => p.Price >= Convert.ToDecimal(preciodesde) && p.Price <= Convert.ToDecimal(preciohasta));
+                }
+                if (tamaniohasta > 0)
+                {
+                    propertyList = propertyList.Where(p=> p.Size >= Convert.ToDecimal(tamaniodesde) && p.Size <= Convert.ToDecimal(tamaniohasta));
+                }
+                if (nbanios > 0)
+                {
+                    propertyList = propertyList.Where(p=> p.Bathrooms > 0 && p.Bathrooms <= Convert.ToDecimal(nbanios));
+                }
+                if (ncuartos > 0)
+                {
+                    propertyList = propertyList.Where(p => p.Bedrooms > 0 && p.Bedrooms <= Convert.ToDecimal(ncuartos));
+                }
             }
 
 
