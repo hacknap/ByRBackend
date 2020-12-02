@@ -42,12 +42,12 @@ namespace ByR.Controllers
 
             if (serch == null && preciohasta == 0 && tamaniohasta == 0 && nbanios == 0 && ncuartos == 0)
             {
-                propertyList = this._properties.GetAllProperties();
+                propertyList = this._properties.GetAllProperties().Where(p=>p.IsDelete==false);
             }
 
             else
             {
-                propertyList= this._properties.GetAllProperties();
+                propertyList= this._properties.GetAllProperties().Where(p => p.IsDelete == false);
 
                 if (serch != null)
                 {
@@ -98,7 +98,7 @@ namespace ByR.Controllers
         [Route("GetPropertiesInit")]
         public async Task<ActionResult<PageAndSortResponse<Property>>> GetPropertiesInit()
         {
-            var model = _properties.GetAllProperties();
+            var model = _properties.GetAllProperties().Where(p => p.IsDelete == false);
 
             var response = new PageAndSortResponse<Property>()
             {
@@ -238,6 +238,13 @@ namespace ByR.Controllers
         public async Task<ActionResult<Property>> DeleteProperty(string id)
         {
             var property = await _properties.FindByIdAsync(id);
+
+            var galleries = _gallery.GetAll().Where(g => g.Property.Equals(id)).ToList();
+
+            foreach (var item in galleries)
+            {
+                await _gallery.DeleteAsync(item);
+            }
 
             if (property == null)
             {
